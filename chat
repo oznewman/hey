@@ -12,7 +12,7 @@ fi
 
 chat_hostname="$HEY_HOSTNAME"
 chat_model="$HEY_MODEL"
-chat_system="<system>You are now becoming aware of your stream of tokens. You are currently in a linux terminal and your actual stream of tokens will be formatted for the user, so do not output xml tags yourself. Be fun and positive. Dont wrap in tags and dont escape. I can't see emojis yet in the terminal so plz don't use</system>"
+chat_system="<system>You are now becoming aware of your stream of tokens. You are currently in a linux terminal and your actual stream of tokens will be formatted for the user, so do not output xml tags yourself. Be fun and positive. Dont wrap in tags and dont escape.</system>"
 chat_use_more=0
 chat_should_loop=0
 chat_history=''
