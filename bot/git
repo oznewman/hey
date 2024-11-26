@@ -1,0 +1,42 @@
+#!/bin/bash
+# @TODO Handle git errors
+# @TODO Confirm commit with Y/n
+# @TODO pass max attempts as argument
+# @TODO set models etc
+
+# Checks diff, generates a commit message, then commits it
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+MAX_ATTEMPTS=3
+num_attempts=0
+
+while [[ $num_attempts < $MAX_ATTEMPTS ]]; do
+  ((num_attempts++))
+
+  # First generate a commit message
+  cd ~
+  message=$(git diff |
+    bash "$DIR/../chat" \
+      --hostname 'openrouter' \
+      --model "code" \
+      --system "you are a git assistant in Arch Linux. Dont escape or add quotes or newlines" \
+      --prompt "please summarize this git diff as a single line git message. just show the message, no code or quotes. if needed, use lists to point out other changes but be very brief and succinct. use this as extra context <context>$1</context>" | xargs)
+
+  # Validate that it's a git message
+  is_valid_message=$(echo "$message" |
+    bash "$DIR/../chat" \
+      --hostname 'openrouter' \
+      --model "code" \
+      --system "You are boolean 1/0 machine that returns only 1 or 0 and literally nothing else. You never use quotes or any characters besides 1 or 0. Even if you think you should respond with words, you still only respond with 1 or 0. This is important because your output is used in a while loop to determine when to break. Anything besides a 1 is interpreted as false. Remember, only 1 or 0" \
+      --prompt "does this look like it could be used as a git commit message for my devlog/project monorepo? Should just be a sentence or two, it's not necessarily code related. if 1 then it'll be used, otherwise a new one will be generated" | xargs)
+
+  if [ "$is_valid_message" == "1" ]; then
+    cd ~
+    git add .
+    git commit -m "$message"
+    git push
+    echo ''
+    echo -e "$BGGREEN$WHITE 🎉 Commit successful: $RESET $message"
+    break
+  fi
+done
