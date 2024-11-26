@@ -14,7 +14,7 @@ fi
 # If no message
 if [ -z "$message" ]; then
     message=$(git diff | \
-    bash $NEWMAN/hey/chat 'summarize git changes as a single line commit message. Wrap in quotes, start with YYMMDD' | \
+    bash $NEWMAN/hey/chat 'summarize git changes as a single line commit message. Dont wrap in quotes, add markup...just a single line' | \
     tee /dev/tty | \
     tr -d '\n')
 fi
@@ -35,6 +35,5 @@ if [ -z "$should_commit" ]; then
     git add .
     git commit -m "$message"
     git push
-    git push github
     echo -e "$GREEN Commit successful! $RESET"
 fi
