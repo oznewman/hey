@@ -20,6 +20,17 @@ I made this because neither Ollama nor Llama.cpp allow for easily piping in file
 --system    # the system prompt to use
 ```
 
+### Notes
+- If the first argument is a string, it is assumed that that is a prompt
+- If no model flag is passed, it is assumed to try the state of the art generalist model on openrouter
+
+```bash
+# These are all similar:
+./hey --prompt 'hello how are you' --model 'sota' --hostname 'openrouter'
+./hey --prompt 'hello how are you' --model 'sota'
+./hey 'hello how are you' --sota
+./hey 'hello how are you'
+```
 
 
 ---
@@ -28,11 +39,24 @@ I made this because neither Ollama nor Llama.cpp allow for easily piping in file
 
 # Recipes
 ```bash
-# summarize folders
-cat devlog/* | ./chat --prompt 'summarize this folder'
+# Summarize october
+echo "<aboutme>$(cat oznewman/**/*)</aboutme>
+  <devlog>$(cat devlog/2410*.md)</devlog>" |
+./hey/chat "summarize these notes" --more
 
-# 
+# Prioritize todo's
+echo "<aboutme>$(cat oznewman/**/*)</aboutme>
+  <devlog>$(cat devlog/**/*)</devlog>" |
+./hey/chat "extract and prioritize todos" --more
 
-# summarize git changes, copy output into clipboard
-git diff | ./chat --prompt 'summzarise this diff as a single line git commit message. Wrap in quotes, start with YYMMDD' | tee /dev/tty | tr -d '\n' | xsel -ib
+# Improve source code
+echo "<code>$(cat hey/**/*)</code>" |
+./hey/chat "That is your source code, how would you improve it?" --more
+
+# Summarize git changes, copy output into clipboard
+git diff |
+bash $NEWMAN/hey/chat 'summarize git changes as a single line commit message. Wrap in quotes, start with YYMMDD' |
+tee /dev/tty |
+tr -d '\n' |
+xsel -ib
 ```
