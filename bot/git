@@ -29,7 +29,7 @@ else
 fi
 
 # Ask if should commit
-echo -e "$MAGENTA Should the message be committed (Y/n)? $RESET"
+echo -e "$MAGENTA Should the message be committed ([Y]es / [n]o / [r]egenerate)? $RESET"
 read -r should_commit
 if [ -z "$should_commit" ]; then
     git add .
