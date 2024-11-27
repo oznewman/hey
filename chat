@@ -78,13 +78,13 @@ openrouter() {
     -H "Authorization: Bearer $API_OPENROUTER" \
     -d "$json_payload")
 
-  chat_echo=$(echo -e "$chat_response" | jq -r '.choices.[].message.content')
-  echo -e "$HEY"
+  chat_echo=$(echo "$chat_response" | jq -r '.choices.[].message.content')
+  echo "$HEY"
 
   if [[ "$chat_use_more" -eq 1 ]]; then
-    echo -e "$chat_echo" | more
+    echo "$chat_echo" | more
   else
-    echo -e "$chat_echo"
+    echo "$chat_echo"
   fi
 }
 
@@ -108,12 +108,12 @@ groq() {
     -H "Content-Type: application/json" \
     -d "$json_payload")
 
-  chat_echo=$(echo -e "$chat_response" | jq -r '.choices.[].message.content')
+  chat_echo=$(echo "$chat_response" | jq -r '.choices.[].message.content')
 
   if [[ "$chat_use_more" -eq 1 ]]; then
-    echo -e "$chat_echo" | more
+    echo "$chat_echo" | more
   else
-    echo -e "$chat_echo"
+    echo "$chat_echo"
   fi
 }
 
