@@ -1,16 +1,13 @@
-# ./hey/chat.sh
-## A portable swarm agent framework written in Bash
+# A portable swarm agent framework written in Bash
 
 This repo has everything you need to design your own agents, swarms, and mixture of experts with minimal code. You can chat with it, pipe in content from other scripts, and redirect the output to the terminal (default) or anywhere else (including itself)
 
-I made this because neither Ollama nor Llama.cpp allow for easily piping in files. They also don't allow for easy model swapping mid-conversation, or for chaining prompts together...this script allows for all that and more!
-
-
 ---
 
+# Commands && Flags
+## ./hey [prompt] --flags
+#### Flags and basic usage
 
-
-## Flags
 ```bash
 ## Flags
 --hostname  # [openrouter|groq]
@@ -20,17 +17,37 @@ I made this because neither Ollama nor Llama.cpp allow for easily piping in file
 --system    # the system prompt to use
 ```
 
-### Notes
-- If the first argument is a string, it is assumed that that is a prompt
-- If no model flag is passed, it is assumed to try the state of the art generalist model on openrouter
+- If the first argument is a string, it is assumed that argument is the `--prompt`
+- If no `--model` flag is passed, it will try to use the most generally accepted state of the art model available
+- If no `--hostname` flag is passed, it is assumed to use [OpenRouter.ai](https://openrouter.ai)
 
 ```bash
+## --model shorthands
+--sota     # state of the art available in --hostname
+--search   # use a search model, like perplexity
+--flash    # use a fast model, like claude haiku
+--rolepla  # roleplaying model
+--small    # use the smallest available model, like qwen 2.5 250M
+
 # These are all similar:
-./hey --prompt 'hello how are you' --model 'sota' --hostname 'openrouter'
-./hey --prompt 'hello how are you' --model 'sota'
-./hey 'hello how are you' --sota
+./hey --prompt 'hello how are you' --model 'anthropic/claude-3.5-sonnet' --hostname 'openrouter'
+./hey --sota --prompt 'hello how are you'
 ./hey 'hello how are you'
 ```
+
+### Creating chains
+#### Piping extra context
+```bash
+# Quickly summarize things
+echo "$VARIABLE" | chat "what is the value of that variable?"
+
+# Files
+cat file.txt | chat "summarize the file"
+
+# Directories
+cat devlog/2411*.md | chat "extract tasks that I missed into a new list"
+```
+
 
 
 ---
