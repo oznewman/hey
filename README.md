@@ -10,16 +10,19 @@ This repo has everything you need to design your own agents, swarms, and mixture
 
 ```bash
 ## Flags
+--prompt    # (optional) The prompt to use
+--system    # (optional) the system prompt to use
 --hostname  # [openrouter|groq]
---more      # pipe into more command
 --model     # model ID to use (depends on hostname)
---prompt    # the prompt to use
---system    # the system prompt to use
+--loop      # enters an interactive chat
+--pager     # use a pager for long responses
 ```
 
 - If the first argument is a string, it is assumed that argument is the `--prompt`
+- If the first and second arguments are strings, then the second one is assumed to be `--system`
 - If no `--model` flag is passed, it will try to use the most generally accepted state of the art model available
 - If no `--hostname` flag is passed, it is assumed to use [OpenRouter.ai](https://openrouter.ai)
+- All defaults are configurable in `./hey/defaults`
 
 ```bash
 ## --model shorthands
@@ -39,13 +42,22 @@ This repo has everything you need to design your own agents, swarms, and mixture
 #### Piping extra context
 ```bash
 # Quickly summarize things
-echo "$VARIABLE" | chat "what is the value of that variable?"
+echo "$VARIABLE"
+| chat "what is the value of that variable?"
 
 # Files
-cat file.txt | chat "summarize the file"
+cat file.txt
+| chat "summarize the file"
 
 # Directories
-cat devlog/2411*.md | chat "extract tasks that I missed into a new list"
+cat devlog/2411*.md
+| chat "extract tasks that I missed into a new list"
+
+# Summarizing chat sessions
+cat devlog/*
+| ./hey 'start a new life coaching session with summary and question' --loop
+| ./hey 'summarize the session'
+>> coaching-notes.txt
 ```
 
 
