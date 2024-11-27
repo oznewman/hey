@@ -18,6 +18,7 @@ chat_should_loop=0
 chat_history=''
 chat_response=''
 chat_echo=''
+chat_debug=0
 
 # Pass command line options
 arg_num=0
@@ -41,6 +42,9 @@ while [[ $# -gt 0 ]]; do
       chat_system="$2"
       shift
       ;;
+	--debug)
+		chat_debug=1
+		;;
     --more)
       chat_use_more=1
       ;;
@@ -59,6 +63,16 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
+
+# Debug
+if [ $chat_debug == 1 ]; then
+	echo -e $BGBLUE$WHITE"DEBUG"$CLEAR
+	echo -e $BGBLUE$WHITE"hostname: $chat_hostname"$CLEAR
+	echo -e $BGBLUE$WHITE"model: $chat_model"$CLEAR
+	echo -e $BGBLUE$WHITE"prompt: $chat_prompt"$CLEAR
+	echo -e $BGBLUE$WHITE"system: $chat_system"$CLEAR
+fi
+
 # POST to OpenRouter API
 openrouter() {
   json_payload=$(jq -n \
@@ -72,11 +86,15 @@ openrouter() {
     		{role: "user", content: $prompt}
 	   	]
     }')
+
+    test $chat_debug -eq 1 && echo -e $BGBLUE$WHITE"payload: $chat_payload"$CLEAR
   
   chat_response=$(curl --silent "https://openrouter.ai/api/v1/chat/completions" \
     -H "Content-Type: applicaiton/json" \
     -H "Authorization: Bearer $API_OPENROUTER" \
     -d "$json_payload")
+
+    test $chat_debug -eq 1 && echo -e $BGBLUE$WHITE"respone: $chat_response"$CLEAR
 
   chat_echo=$(echo "$chat_response" | jq -r '.choices.[].message.content')
   echo "$HEY"

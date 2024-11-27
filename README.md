@@ -89,3 +89,9 @@ tee /dev/tty |
 tr -d '\n' |
 xsel -ib
 ```
+
+
+---
+
+# Tasks / Todos
+[ ] add note to recursively install submodules eg sim.html
